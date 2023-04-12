@@ -23,7 +23,7 @@ public class Main {
 
     public static void main(String args[])
     {
-        int n = 10;
+        int n = 1000;
         double srcArrayA[][] = new double[n][n];
         double srcArrayB[][] = new double[n][n];
         double dstArray[][] = new double[n][n];
@@ -37,22 +37,25 @@ public class Main {
         }
 
         double test[];
-        test = CLmatrice.matrice_to_array(srcArrayA);
+        long startTime = System.currentTimeMillis();
+        dstArray = CLmatrice.multiplyMatrices(srcArrayA,srcArrayB);
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+        System.out.println("Time taken: " + duration + " milliseconds");
 
-        for( int i = 0; i < srcArrayA.length; i++){
-            for( int j = 0; j < srcArrayA[0].length; j++) {
-                System.out.print( Double.toString(srcArrayA[i][j]) + " " );
+        startTime = System.currentTimeMillis();
+        matrixoper.multiplyMatrices(srcArrayA,srcArrayB);
+        endTime = System.currentTimeMillis();
+        duration = endTime - startTime;
+        System.out.println("Time taken: " + duration + " milliseconds");
+        /*
+        for( int i = 0; i < dstArray.length; i++){
+            for( int j = 0; j < dstArray[0].length; j++) {
+                System.out.print( Double.toString(dstArray[i][j]) + " " );
             }
             System.out.println();
         }
-
-        for( int i = 0; i < srcArrayA.length; i++){
-            for( int j = 0; j < srcArrayA[0].length; j++) {
-                System.out.print( Double.toString(test[i*10+j]) + " " );
-            }
-            System.out.println();
-        }
-
+        */
         // OPENCL
 
 
