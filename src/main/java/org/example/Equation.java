@@ -86,6 +86,7 @@ public class Equation extends Thread {
         lab2.leq.setText("");
         lab2.req.setText("");
         lab2.x.setText("");
+        lab2.times.setText("");
     }
 
 
@@ -255,6 +256,7 @@ public class Equation extends Thread {
 
 
     public void run(){
+        long startTime = System.currentTimeMillis();
         this.init();
         lab2.y1.setText("");
         lab2.y2.setText("");
@@ -326,7 +328,13 @@ public class Equation extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+
         printusedmemory();
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+        lab2.times.setText("Обчислення виконано\n за " + Double.toString(duration/1000.0) + "\nсекунд.");
+
         lab2.button1.setEnabled(true);
     }
 }

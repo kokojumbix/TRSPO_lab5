@@ -19,8 +19,9 @@ public class Lab2 {
     public JTextField leq;
     public JTextField req;
     public JTextField x;
-    private JTextField time;
+
     private JCheckBox useOpenCLCheckBox;
+    public JLabel times;
     public Lab2 lab2 = this;
     public CLmatrice cl = new CLmatrice();
     public void progress(int n){

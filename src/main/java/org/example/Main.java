@@ -36,16 +36,11 @@ public class Main {
             }
         }
 
-        double test[];
         CLmatrice cl = new CLmatrice();
         long startTime = System.currentTimeMillis();
         dstArray = cl.multiplyMatrices(srcArrayA,srcArrayB);
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-        System.out.println("Time taken: " + duration + " milliseconds");
-        dstArray = cl.multiplyMatrices(srcArrayA,srcArrayB);
-        endTime = System.currentTimeMillis();
-        duration = endTime - startTime;
         System.out.println("Time taken: " + duration + " milliseconds");
 
         startTime = System.currentTimeMillis();

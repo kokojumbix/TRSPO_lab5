@@ -138,7 +138,15 @@ public class CLmatrice {
         CL.clSetKernelArg(kernel, 5, Sizeof.cl_int, Pointer.to(new int[]{k}));
 
         long global_work_size[] = new long[]{m,k};
-        long local_work_size[] = new long[]{1,1};
+        long local_work_size[];
+        if (m==k && m % 10 == 0)
+            local_work_size = new long[]{10,10};
+        else if (m!=k && k == 1 && m%10==0)
+            local_work_size = new long[]{10,1};
+        else if (m!=k && m == 1 && k%10==0)
+            local_work_size = new long[]{1,10};
+        else
+            local_work_size = new long[]{1,1};
 
 
         // Execute the kernel
