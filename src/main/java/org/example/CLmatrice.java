@@ -40,7 +40,12 @@ public class CLmatrice {
                     "    C[i*k+j] = sum;" +
                     "}";
 
-    public static double[][] multiplyMatrices(double[][] firstMatrix, double[][] secondMatrix) {
+    public int numPlatformsArray[] = new int[1];
+    CLmatrice(){
+        CL.clGetPlatformIDs(0, null, numPlatformsArray);
+    }
+
+    public double[][] multiplyMatrices(double[][] firstMatrix, double[][] secondMatrix) {
         long startTime = System.currentTimeMillis();
 
         int rowFirstMatrix = firstMatrix.length;
@@ -57,8 +62,6 @@ public class CLmatrice {
         final int k = columnSecondMatrix;
 
         double[] srcArrayA = matrice_to_array(firstMatrix);
-
-
         double[] srcArrayB = matrice_to_array(secondMatrix);
         double[] dstArray = new double[rowFirstMatrix * columnSecondMatrix];
 
@@ -68,7 +71,6 @@ public class CLmatrice {
         Pointer srcB = Pointer.to(srcArrayB);
         Pointer dst = Pointer.to(dstArray);
 
-        System.out.println("Time 4 init taken: " + (System.currentTimeMillis()-startTime) + " milliseconds");
 
         final int platformIndex = 0;
         final long deviceType = CL.CL_DEVICE_TYPE_GPU;
@@ -78,20 +80,15 @@ public class CLmatrice {
 
         int numPlatformsArray[] = new int[1];
         CL.clGetPlatformIDs(0, null, numPlatformsArray);
-        int numPlatforms = numPlatformsArray[0];
-        System.out.println(numPlatforms);
-        System.out.println("Time 4 init taken: " + (System.currentTimeMillis()-startTime) + " milliseconds");
+        int numPlatforms = this.numPlatformsArray[0];
 
         cl_platform_id platforms[] = new cl_platform_id[numPlatforms];
         CL.clGetPlatformIDs(platforms.length, platforms, null);
         cl_platform_id platform = platforms[platformIndex];
 
-        System.out.println("Time 4 init taken: " + (System.currentTimeMillis()-startTime) + " milliseconds");
-
         cl_context_properties contextProperties = new cl_context_properties();
         contextProperties.addProperty(CL.CL_CONTEXT_PLATFORM, platform);
 
-        System.out.println("Time 4 init taken: " + (System.currentTimeMillis()-startTime) + " milliseconds");
 
         int numDevicesArray[] = new int[1];
         CL.clGetDeviceIDs(platform, deviceType, 0, null, numDevicesArray);
@@ -103,7 +100,6 @@ public class CLmatrice {
 
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-        System.out.println("Time 4 init taken: " + duration + " milliseconds");
 
         cl_context context = CL.clCreateContext(
                 contextProperties, 1, new cl_device_id[]{device},
@@ -131,7 +127,6 @@ public class CLmatrice {
         // Create the kernel
         cl_kernel kernel = CL.clCreateKernel(program, "matrixMultiplication", null);
 
-        // Set the arguments for the kernel
         CL.clSetKernelArg(kernel, 0,
                 Sizeof.cl_mem, Pointer.to(memObjects[0]));
         CL.clSetKernelArg(kernel, 1,
@@ -142,15 +137,14 @@ public class CLmatrice {
         CL.clSetKernelArg(kernel, 4, Sizeof.cl_int, Pointer.to(new int[]{n}));
         CL.clSetKernelArg(kernel, 5, Sizeof.cl_int, Pointer.to(new int[]{k}));
 
-        // Set the work-item dimensions
         long global_work_size[] = new long[]{m,k};
-        long local_work_size[] = new long[]{10,10};
+        long local_work_size[] = new long[]{1,1};
 
-        System.out.println("Time 4 init taken: " + (System.currentTimeMillis()-startTime) + " milliseconds");
 
         // Execute the kernel
         CL.clEnqueueNDRangeKernel(commandQueue, kernel, 2, null,
                 global_work_size, local_work_size, 0, null, null);
+
 
         // Read the output data
         CL.clEnqueueReadBuffer(commandQueue, memObjects[2], CL.CL_TRUE, 0,
